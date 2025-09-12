@@ -1,5 +1,5 @@
 // ----- CONFIG -----
-const API = "http://127.0.0.1:8010";
+const API = "";
 console.log("app.js loaded", new Date().toISOString());
 
 // ----- STATE -----
