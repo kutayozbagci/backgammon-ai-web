@@ -9,12 +9,9 @@ import uuid, random
 import os
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
+from player import Player
 
 ROOT = os.path.join(os.path.dirname(__file__), "static_site")
-
-
-from .player import Player   # your rules + apply_path
-# DRLagent is used inside Player.brain
 
 # -------- models --------
 class NewGameReq(BaseModel):
@@ -80,11 +77,11 @@ def flip_state(s: List[int]) -> List[int]:
 
 # -------- load single AI --------
 AI = Player()
+MODEL_PATH = os.path.join(os.path.dirname(__file__), "models", "best_brain.pth")
 try:
-    AI.brain.load_model("backend/models/best_brain.pth")
+    AI.brain.load_model(MODEL_PATH)
 except Exception as e:
-    print("WARNING: failed to load best_brain.pth:", e)
-    # it will still run, but choose() must handle no-weights case
+    print("WARNING: failed to load model:", e)
 
 # -------- enumerate legal paths (for UI + validation) --------
 def enumerate_paths(player: Player, state: List[int], d1: int, d2: int) -> List[List[Tuple[int,int,int]]]:
