@@ -1,0 +1,82 @@
+<!doctype html>
+<meta charset="utf-8" />
+<title>Backgammon — Play vs AI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root {
+    --bg:#0b0f14; --panel:#121720; --panel-2:#0e141c; --text:#e9eef5; --muted:#9bb0c9;
+    --accent:#60a5fa; --good:#22c55e; --bad:#ef4444; --border:#0f172a; --own:#3b82f6; --opp:#ef4444; --hl:#f59e0b;
+  }
+  html,body{height:100%;background:var(--bg);color:var(--text)}
+  body{font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;margin:0;padding:24px;display:grid;gap:16px;place-items:start center}
+  .app{width:min(1100px,96vw);display:grid;gap:16px}
+  .topbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .card{background:linear-gradient(180deg,var(--panel),var(--panel-2));border:1px solid var(--border);border-radius:14px;padding:12px 14px}
+  select,button,input{background:#0f1520;color:var(--text);border:1px solid #1f2937;border-radius:10px;padding:10px 12px;font-size:15px;outline:none}
+  button{cursor:pointer}
+  button.primary{background:var(--accent);color:#031221;border-color:transparent;font-weight:600}
+  button.good{background:var(--good);color:#031221;border-color:transparent;font-weight:600}
+  button.warn{background:var(--bad);color:#031221;border-color:transparent;font-weight:600}
+  button:disabled{opacity:.5;cursor:not-allowed}
+  .grid{display:grid;grid-template-columns:1fr 330px;gap:16px}
+  @media (max-width:980px){.grid{grid-template-columns:1fr}}
+  .board-wrap{padding:10px}
+  .sidepanel{display:grid;gap:12px;align-content:start}
+  .stat{display:flex;justify-content:space-between;gap:10px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas}
+  .paths{max-height:360px;overflow:auto;display:grid;gap:8px}
+  .path-item{padding:8px 10px;border-radius:10px;border:1px solid #1f2937;cursor:pointer;background:#0c1117}
+  .path-item:hover{border-color:var(--accent)}
+  .path-item.active{border-color:var(--hl);box-shadow:0 0 0 2px #000 inset}
+  .pill{display:inline-block;padding:.2rem .5rem;border-radius:999px;background:#0b1220;border:1px solid #1f2937;color:var(--muted)}
+  .legend{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .dot{width:12px;height:12px;border-radius:50%;display:inline-block}
+  .dot.own{background:var(--own)} .dot.opp{background:var(--opp)} .dot.hl{background:var(--hl)}
+  .muted{color:var(--muted)}
+</style>
+
+<div class="app">
+  <div class="topbar card">
+    <select id="ai_side">
+      <option value="ONE" selected>AI plays ONE (opponent starts)</option>
+      <option value="TWO">AI plays TWO (you start)</option>
+    </select>
+    <button id="new" class="primary">New Game</button>
+    <button id="roll">Roll Dice</button>
+    <span id="dice" class="pill">dice: –</span>
+    <button id="human" class="good" disabled>Submit Selected Move</button>
+    <button id="ai" class="warn" disabled>AI Move</button>
+    <span class="legend">
+      <span class="dot own"></span> you &nbsp;&nbsp;
+      <span class="dot opp"></span> opponent &nbsp;&nbsp;
+      <span class="dot hl"></span> selected path
+    </span>
+  </div>
+
+  <div class="grid">
+    <div class="board-wrap card">
+      <svg id="board" viewBox="0 0 1000 600" style="width:100%;height:auto;display:block;"></svg>
+    </div>
+
+    <div class="sidepanel">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <strong>Legal Moves</strong>
+          <button id="refresh" style="margin-left:auto;">Refresh</button>
+        </div>
+        <div id="paths" class="paths"></div>
+        <div class="muted" style="margin-top:6px;">Tip: Click a row to select and preview a path, then “Submit Selected Move”.</div>
+      </div>
+
+      <div class="card">
+        <strong>State</strong>
+        <div class="stat"><span>Own broken</span><span id="own_broken" class="pill">0</span></div>
+        <div class="stat"><span>Own borne off</span><span id="own_off" class="pill">0</span></div>
+        <div class="stat"><span>Opp broken</span><span id="opp_broken" class="pill">0</span></div>
+        <div class="stat"><span>Opp borne off</span><span id="opp_off" class="pill">0</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Defer + cache-bust to ensure DOM is ready and fresh JS loads -->
+<script defer src="js/app.js?v=7"></script>
