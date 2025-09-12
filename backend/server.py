@@ -6,6 +6,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Tuple, Dict, Any
 import uuid, random
+import os
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+
+ROOT = os.path.join(os.path.dirname(__file__), "static_site")
+
 
 from .player import Player   # your rules + apply_path
 # DRLagent is used inside Player.brain
@@ -29,10 +35,22 @@ class AiMoveReq(BaseModel):
 # -------- app --------
 app = FastAPI()
 
+# serve common subfolders if they exist
+if os.path.isdir(os.path.join(ROOT, "js")):
+    app.mount("/js", StaticFiles(directory=os.path.join(ROOT, "js")), name="js")
+if os.path.isdir(os.path.join(ROOT, "css")):
+    app.mount("/css", StaticFiles(directory=os.path.join(ROOT, "css")), name="css")
+if os.path.isdir(os.path.join(ROOT, "assets")):
+    app.mount("/assets", StaticFiles(directory=os.path.join(ROOT, "assets")), name="assets")
+
+# SPA catch-all (keep this near the bottom after your API routes)
+@app.get("/{path:path}")
+def spa(path: str = ""):
+    return FileResponse(os.path.join(ROOT, "index.html"))
+
 ALLOWED_ORIGINS = [
-    "http://127.0.0.1:5500",
-    "http://localhost:5500",
-    "http://[::1]:5500",   # IPv6 localhost (what your http.server is using)
+    "https://backgammonai.xyz",
+    "https://www.backgammonai.xyz",
 ]
 
 app.add_middleware(
