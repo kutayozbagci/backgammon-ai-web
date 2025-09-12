@@ -1,7 +1,7 @@
 """
 @author: ranger
 """
-from .algorithm2 import DRLagent2
+from algorithm2 import DRLagent2
 import numpy as np
 import os
 
