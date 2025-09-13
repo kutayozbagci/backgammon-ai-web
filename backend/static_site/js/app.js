@@ -56,8 +56,9 @@ function drawBoardBase(){
 
   // bars centered vertically
   const midY = padding + boardH/2;
-  make("text",{x:barXc,y:midY-12,fill:COLOR_LABEL,"font-size":"12","text-anchor":"middle"}).textContent="Opp bar";
-  make("text",{x:barXc,y:midY+12,fill:COLOR_LABEL,"font-size":"12","text-anchor":"middle"}).textContent="Your bar";
+  const midX = padding + boardW / 2;
+  make("text",{x:midX,y:midY-12,fill:COLOR_LABEL,"font-size":"12","text-anchor":"middle"}).textContent="Opp bar";
+  make("text",{x:midX,y:midY+12,fill:COLOR_LABEL,"font-size":"12","text-anchor":"middle"}).textContent="Your bar";
 }
 
 // helper to draw borne-off stacks into the side trays
@@ -67,8 +68,8 @@ function drawOffStack(count, side){
   const step = side==='opp' ? 28 : -28;
   const color = side==='opp' ? COLOR_OPP : COLOR_OWN;
   const capped = Math.min(count,5);
-  for (let i=0;i<capped;i++) drawChecker(x, startY + i*step, color);
-  if (count>5) drawChecker(x, startY + (capped-1)*step, color, `+${count-5}`);
+  for (let i=0;i<count;i++) drawChecker(x, startY + i*step, color);
+  // if (count>5) drawChecker(x, startY + (capped-1)*step, color, `+${count-5}`);
 }
 
 function drawChecker(x,y,color,text=null,glow=false){
