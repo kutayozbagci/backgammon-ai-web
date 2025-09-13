@@ -32,25 +32,6 @@
   .dot{width:12px;height:12px;border-radius:50%;display:inline-block}
   .dot.own{background:var(--own)} .dot.opp{background:var(--opp)} .dot.hl{background:var(--hl)}
   .muted{color:var(--muted)}
-    .grid{
-      grid-template-columns: minmax(0, 1000px) 330px; /* board ≈ svg width, side = 330 */
-      justify-content: center;                        /* center whole grid in .app */
-    }
-    
-    /* 2) Center the SVG within its card */
-    .board-wrap{
-      display: flex;
-      justify-content: center;
-    }
-    
-    /* 3) Keep the SVG nicely sized */
-    #board{
-      width: 100%;
-      max-width: 1000px;   /* matches viewBox width */
-      height: auto;
-      display: block;
-      margin: 0 auto;
-    }
 </style>
 
 <div class="app">
