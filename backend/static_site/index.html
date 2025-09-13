@@ -32,6 +32,13 @@
   .dot{width:12px;height:12px;border-radius:50%;display:inline-block}
   .dot.own{background:var(--own)} .dot.opp{background:var(--opp)} .dot.hl{background:var(--hl)}
   .muted{color:var(--muted)}
+  #win{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+     background:rgba(0,0,0,.5);z-index:9999}
+  #win.hidden{display:none}
+  #win .card{background:#0b1220;color:#e5e7eb;padding:16px 20px;border-radius:12px;
+     text-align:center;max-width:320px;width:min(92vw,320px);box-shadow:0 8px 24px rgba(0,0,0,.35)}
+  #win button{background:#1f2937;color:#e5e7eb;border:none;border-radius:8px;padding:8px 12px;cursor:pointer}
+  #win button:hover{filter:brightness(1.1)}
 </style>
 
 <div class="app">
@@ -76,6 +83,15 @@
       </div>
     </div>
   </div>
+  <div id="win" class="hidden">
+  <div class="card">
+    <h2 id="win-title">You win! 🎉</h2>
+    <div style="margin-top:8px;display:flex;gap:8px;justify-content:center">
+      <button id="win-again">Play again</button>
+      <button id="win-close">Close</button>
+    </div>
+  </div>
+</div>
 </div>
 
 <!-- Defer + cache-bust to ensure DOM is ready and fresh JS loads -->

@@ -11,6 +11,9 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from player import Player
 
+player_win = 0
+ai_win = 0
+
 ROOT = os.path.join(os.path.dirname(__file__), "static_site")
 
 # -------- models --------
@@ -232,6 +235,14 @@ def move_human(req: HumanMoveReq):
 
     s2_h = AI.apply_path(s_h.copy(), req.path)
     done = (s2_h[1] == 15)
+    global ai_win
+    global player_win
+    if s2_h[1] == 15:
+        player_win +=1
+        if s2_h[3] == 0:
+            player_win+=1
+    if done:
+        print(f"Human wins: {player_win} | AI wins: {ai_win}")
 
     g["state"] = s2_h
     g["dice"]  = None
@@ -263,7 +274,15 @@ def move_ai(req: AiMoveReq):
     path = paths[idx]
 
     s2_ai = AI.apply_path(s_ai.copy(), path)        # AI perspective result
+    global ai_win
+    global player_win
     done  = (s2_ai[1] == 15)
+    if s2_ai[1] == 15:
+        ai_win +=1
+        if s2_ai[3] == 0:
+            ai_win+=1 
+    if done:
+        print(f"Human wins: {player_win} | AI wins: {ai_win}")
     s2_h  = flip_state(s2_ai)                       # back to HUMAN perspective
 
     g["state"] = s2_h

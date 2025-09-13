@@ -180,6 +180,8 @@ function reflectTurn(){
 // ----- Wire up after DOM is ready -----
 document.addEventListener("DOMContentLoaded", () => {
   svg = $("board");
+  $("win-close").onclick = hideWin;
+  $("win-again").onclick = () => { hideWin(); $("new").click(); };
   $("new").onclick = async () => {
       if (!confirm("Start a new game? Current game will be lost.")) return;
   try {
@@ -207,8 +209,6 @@ document.addEventListener("DOMContentLoaded", () => {
     legalPaths = leg.paths || [];
     if (!Array.isArray(legalPaths) || legalPaths.length === 0) legalPaths = [[]];
     renderPaths();
-    renderPaths();
-
     if (legalPaths.length === 1) {
       // Let the DOM paint, then dispatch a real click so your onclick runs.
       requestAnimationFrame(() => {
@@ -251,7 +251,7 @@ document.addEventListener("DOMContentLoaded", () => {
       dice = null; setDice(null);
       legalPaths = []; selectedPathIdx = null; setBtns();
       drawFromState(state); renderPaths();
-      if(j.done) alert("You bore off all — GG!");
+      if (j.done) showWin("You"); 
     } catch(e){ alert(e); }
   };
 
@@ -262,7 +262,7 @@ document.addEventListener("DOMContentLoaded", () => {
       state = j.state; dice = null; setDice(null); setBtns(); drawFromState(state);
       if(j.path && j.path.length){ legalPaths=[j.path]; selectedPathIdx=0; renderPaths(); }
       else { legalPaths=[]; selectedPathIdx=null; renderPaths(); }
-      if(j.done) alert("AI bore off all — GG!");
+      if (j.done) showWin("AI"); 
     } catch(e){ alert(e); }
   };
 
@@ -286,3 +286,12 @@ function selectPath(i){
   renderPaths();
   reflectTurn();
 }
+
+function showWin(who) {
+  $("win-title").textContent = (who === "AI") ? "AI wins!": "You win! CONGRATS";
+  $("win").classList.remove("hidden");
+  $("human").disabled = true;
+  $("ai").disabled = true;
+}
+
+function hideWin() { $("win").classList.add("hidden"); }
